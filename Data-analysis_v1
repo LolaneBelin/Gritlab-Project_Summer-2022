@@ -20,14 +20,12 @@ import statistics
 #Data presentation :
 #
 #
-# At the end, there is 13 data tables (july_11, july_15, july_18, july_22, july_25, july_29, aug_1, aug_5, aug_8, aug_12, aug_15, aug_19, aug _, aug_26),
-# (for example, july_22 contains the data from july 17 to july 22)
-# and 1 data table containing all data from july 6 to august 26 : full_data
+# To run this code, you must upload the csv file (18_july PROCESSED DATA) and enter the right adress on the first lines of code.
 
 
 # 1/ Importing data :
     
-july_18 = pd.read_csv(r"C:/Users/lolan/OneDrive/Bureau/Gritlab data/2022-07-18/18_july DATA PROCESSED.csv", sep = ";", header = None)
+july_18 = pd.read_csv(r"#enter adress of the file#/18_july DATA PROCESSED.csv", sep = ";", header = None)
 """
 july_11 = pd.read_csv(r"C:/Users/lolan/OneDrive/Bureau/Gritlab data/2022-07-11/11_july DATA PROCESSED.csv", sep = ";", header = None)
 july_15 = pd.read_csv(r"C:/Users/lolan/OneDrive/Bureau/Gritlab data/2022-07-15/15_july DATA PROCESSED.csv", sep = ";", header = None)
