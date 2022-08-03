@@ -1,0 +1,840 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Jul 12 20:53:44 2022
+
+@author: Lolane Belin
+
+Data processing of the bed and weather data of the Gritlab Project from Juy 7th 2022 to August XXth 2022
+
+"""
+
+# 0/ Importing the necessary librairies for our code to run
+
+import pandas as pd
+import datetime
+import numpy as np
+import matplotlib.pyplot as plt
+from math import *
+import statistics
+
+#Data presentation :
+#
+#
+# At the end, there is 13 data tables (july_11, july_15, july_18, july_22, july_25, july_29, aug_1, aug_5, aug_8, aug_12, aug_15, aug_19, aug _, aug_26),
+# (for example, july_22 contains the data from july 17 to july 22)
+# and 1 data table containing all data from july 6 to august 26 : full_data
+
+
+# 1/ Importing data :
+    
+july_18 = pd.read_csv(r"C:/Users/lolan/OneDrive/Bureau/Gritlab data/2022-07-18/18_july DATA PROCESSED.csv", sep = ";", header = None)
+"""
+july_11 = pd.read_csv(r"C:/Users/lolan/OneDrive/Bureau/Gritlab data/2022-07-11/11_july DATA PROCESSED.csv", sep = ";", header = None)
+july_15 = pd.read_csv(r"C:/Users/lolan/OneDrive/Bureau/Gritlab data/2022-07-15/15_july DATA PROCESSED.csv", sep = ";", header = None)
+july_18 = pd.read_csv(r"C:/Users/lolan/OneDrive/Bureau/Gritlab data/2022-07-18/18_july DATA PROCESSED.csv", sep = ";", header = None)
+july_26 = pd.read_csv(r"C:/Users/lolan/OneDrive/Bureau/Gritlab data/2022-07-26/26_july DATA PROCESSED.csv", sep = ";", header = None)
+july_29 = pd.read_csv(r"C:/Users/lolan/OneDrive/Bureau/Gritlab data/2022-07-29/29_july DATA PROCESSED.csv", sep = ";", header = None)
+aug_1 =   pd.read_csv(r"C:/Users/lolan/OneDrive/Bureau/Gritlab data/2022-08-01/1_aug DATA PROCESSED.csv", sep = ";", header = None)
+aug_5 =   pd.read_csv(r"C:/Users/lolan/OneDrive/Bureau/Gritlab data/2022-08-05/5_aug DATA PROCESSED.csv", sep = ";", header = None)
+aug_8 =   pd.read_csv(r"C:/Users/lolan/OneDrive/Bureau/Gritlab data/2022-08-08/8_aug DATA PROCESSED.csv", sep = ";", header = None)
+aug_12 =  pd.read_csv(r"C:/Users/lolan/OneDrive/Bureau/Gritlab data/2022-08-12/12_aug DATA PROCESSED.csv", sep = ";", header = None)
+aug_15 =  pd.read_csv(r"C:/Users/lolan/OneDrive/Bureau/Gritlab data/2022-08-15/15_aug DATA PROCESSED.csv", sep = ";", header = None)
+aug_19 =  pd.read_csv(r"C:/Users/lolan/OneDrive/Bureau/Gritlab data/2022-08-19/19_aug DATA PROCESSED.csv", sep = ";", header = None)
+aug_22 =  pd.read_csv(r"C:/Users/lolan/OneDrive/Bureau/Gritlab data/2022-08-22/22_aug DATA PROCESSED.csv", sep = ";", header = None)
+aug_26 =  pd.read_csv(r"C:/Users/lolan/OneDrive/Bureau/Gritlab data/2022-08-26/26_aug DATA PROCESSED.csv", sep = ";", header = None)
+"""
+
+# 2/ Visualisating raw data
+# La tu met : processing data so that python can we can manipalulate it through Python
+# 2/a) Visualisation of the temperatures of each bed
+
+def temp_visu(data_table,n):
+    
+#Fisrt we name the different lists of data we want to visualize  
+    
+    Time = []
+    Temp_CntrlRoof = []
+    Temp_UnderBed_GBR2 = []
+    Temp_InSoil_GBR2 = []
+    Temp_15AboveBed_GBR2 = []
+    Temp_60AboveBed_GBR2 = []
+    Temp_UnderBed_GBR1 = []
+    Temp_InSoil_GBR1 = []
+    Temp_15AboveBed_GBR1 = []
+    Temp_60AboveBed_GBR1 = []
+    Temp_UnderBed_GR2 = []
+    Temp_InSoil_GR2 = []
+    Temp_15AboveBed_GR2 = []
+    Temp_60AboveBed_GR2 = []
+    Temp_UnderBed_GR1 = []
+    Temp_InSoil_GR1 = []
+    Temp_15AboveBed_GR1 = []
+    Temp_60AboveBed_GR1 = []
+ 
+# Then we transform the data into float so that we can manipulate it with Python and put it in the right list
+
+    for i in range (1,len(data_table)):
+            Time.append(datetime.datetime(2022,int(data_table[0][i][3:5]),int(data_table[0][i][0:2]),int(data_table[0][i][11:13]),int(data_table[0][i][14:16])))
+            
+            Temp_CntrlRoof.append(float(data_table[5][i]))
+            
+            Temp_UnderBed_GBR2.append(float(data_table[6][i]))
+            Temp_InSoil_GBR2.append(float(data_table[7][i]))
+            Temp_15AboveBed_GBR2.append(float(data_table[8][i]))
+            Temp_60AboveBed_GBR2.append(float(data_table[9][i]))
+            
+            Temp_UnderBed_GBR1.append(float(data_table[10][i]))
+            Temp_InSoil_GBR1.append(float(data_table[11][i]))
+            Temp_15AboveBed_GBR1.append(float(data_table[12][i]))
+            Temp_60AboveBed_GBR1.append(float(data_table[13][i]))
+            
+            Temp_UnderBed_GR2.append(float(data_table[14][i]))
+            Temp_InSoil_GR2.append(float(data_table[15][i]))
+            Temp_15AboveBed_GR2.append(float(data_table[16][i]))
+            Temp_60AboveBed_GR2.append(float(data_table[17][i]))
+            
+            Temp_UnderBed_GR1.append(float(data_table[18][i]))
+            Temp_InSoil_GR1.append(float(data_table[19][i]))
+            Temp_15AboveBed_GR1.append(float(data_table[20][i]))
+            Temp_60AboveBed_GR1.append(float(data_table[21][i]))
+           
+
+# Finaly we visualize the temperature according to the bed we are interested in
+
+    if n==1 :
+        plt.plot_date(Time, Temp_60AboveBed_GBR1,"-", label = 'Temperature 60cm Above Bed_GBR1')
+        plt.plot_date(Time, Temp_15AboveBed_GBR1,"-", label = 'Temperature 15cm Above Bed_GBR1')
+        plt.plot_date(Time, Temp_InSoil_GBR1,"-", label = 'Temperature of Soil_GBR1')
+        plt.plot_date(Time, Temp_UnderBed_GBR1,"-", label = 'Temperature under the bed_GBR1')
+        plt.plot_date(Time, Temp_CntrlRoof,"-", label = 'Temperature of Control Roof')
+        plt.legend()
+        plt.title("Temperatures of the GRB1")
+        plt.show()
+        
+    elif n==2 :
+        plt.plot_date(Time, Temp_60AboveBed_GBR2,"-", label = 'Temperature 60cm Above Bed_GBR2')
+        plt.plot_date(Time, Temp_15AboveBed_GBR2,"-", label = 'Temperature 15cm Above Bed_GBR2')
+        plt.plot_date(Time, Temp_InSoil_GBR2,"-", label = 'Temperature of Soil_GBR2')
+        plt.plot_date(Time, Temp_UnderBed_GBR2,"-", label = 'Temperature under the bed_GBR2')
+        plt.plot_date(Time, Temp_CntrlRoof,"-", label = 'Temperature of Control Roof')
+        plt.legend()
+        plt.title("Temperatures of the GRB2")
+        plt.show()
+        
+    elif n==3 :
+        plt.plot_date(Time, Temp_60AboveBed_GR1,"-", label = 'Temperature 60cm Above Bed_GR1')
+        plt.plot_date(Time, Temp_15AboveBed_GR1,"-", label = 'Temperature 15cm Above Bed_GR1')
+        plt.plot_date(Time, Temp_InSoil_GR1,"-", label = 'Temperature of Soil_GR1')
+        plt.plot_date(Time, Temp_UnderBed_GR1,"-", label = 'Temperature under the bed_GR1')
+        plt.plot_date(Time, Temp_CntrlRoof,"-", label = 'Temperature of Control Roof')
+        plt.legend()
+        plt.title("Temperatures of the GR1")
+        plt.show()
+        
+    elif n==4 :
+        plt.plot_date(Time, Temp_60AboveBed_GR2,"-", label = 'Temperature 60cm Above Bed_GR2')
+        plt.plot_date(Time, Temp_15AboveBed_GR2,"-", label = 'Temperature 15cm Above Bed_GR2')
+        plt.plot_date(Time, Temp_InSoil_GR2,"-", label = 'Temperature of Soil_GR2')
+        plt.plot_date(Time, Temp_UnderBed_GR2,"-", label = 'Temperature under the bed_GR2')
+        plt.plot_date(Time, Temp_CntrlRoof,"-", label = 'Temperature of Control Roof')
+        plt.legend()
+        plt.title("Temperatures of the GR2")
+        plt.show()
+    
+# 2/b) Visualisation of the raingauge of each bed
+
+def rain_visu(data_table,n):
+    
+    Time = []
+    RainGauge_GBR2 = []
+    RainGauge_GBR1 = []
+    RainGauge_GR2 = []
+    RainGauge_GR1 = []
+    Rain = []
+    
+    for i in range (1,len(data_table)):
+            Time.append(datetime.datetime(2022,int(data_table[0][i][3:5]),int(data_table[0][i][0:2]),int(data_table[0][i][11:13]),int(data_table[0][i][14:16]))) 
+            RainGauge_GBR2.append(float(data_table[1][i]))
+            RainGauge_GBR1.append(float(data_table[2][i]))
+            RainGauge_GR2.append(float(data_table[3][i]))
+            RainGauge_GR1.append(float(data_table[4][i]))
+            Rain.append(float(data_table[22][i]))
+            
+    if n==1 :
+        plt.plot_date(Time, RainGauge_GBR1,"-", label = 'Rain Gauge of GBR1')
+        plt.plot_date(Time, Rain,"-", label = 'Rainfall')
+        plt.legend()
+        plt.title("Raingauge of the GBR1")
+        plt.show()
+        
+    elif n==2 :
+        plt.plot_date(Time, RainGauge_GBR2,"-", label = 'Rain Gauge of GBR2')
+        plt.plot_date(Time, Rain,"-", label = 'Rainfall')
+        plt.legend()
+        plt.title("Raingauge of the GBR2")
+        plt.show()
+        
+    elif n==3 :
+        plt.plot_date(Time, RainGauge_GR1,"-", label = 'Rain Gauge of GBR1')
+        plt.plot_date(Time, Rain,"-", label = 'Rainfall')
+        plt.legend()
+        plt.title("Raingauge of the GR1")
+        plt.show()
+        
+    elif n==4 :
+        plt.plot_date(Time, RainGauge_GR2,"-", label = 'Rain Gauge of GBR1')
+        plt.plot_date(Time, Rain,"-", label = 'Rainfall')
+        plt.legend()
+        plt.title("Raingauge of the GR2")
+        plt.show()
+
+# 2/c) Visualisation of the solar radiation 
+
+def solar_visu(data_table) :
+    
+    Time = []
+    Solar_Radiation = []
+    
+    for i in range (1,len(data_table)):
+        Time.append(datetime.datetime(2022,int(data_table[0][i][3:5]),int(data_table[0][i][0:2]),int(data_table[0][i][11:13]),int(data_table[0][i][15:17]))) 
+        Solar_Radiation.append(float(data_table[23][i])/30)
+    
+    plt.plot_date(Time, Solar_Radiation,"-", label = 'Solar Radiation')
+    plt.legend()
+    plt.title("Solar Radiation")
+    plt.show()
+        
+              
+# 3/ Improving the readibility of the data
+# 3/a) Erasing irregularities
+# 3/b) Smoothing out the curbs of the plots 
+
+#First try (taking average of n=+-1 around the data)
+
+def denoised_temp_v1(data_table,n):
+
+#Fisrt we name the different lists of data we want to visualize  
+    
+    Time = []
+    Temp_CntrlRoof = []
+    Temp_UnderBed_GBR2 = []
+    Temp_InSoil_GBR2 = []
+    Temp_15AboveBed_GBR2 = []
+    Temp_60AboveBed_GBR2 = []
+    Temp_UnderBed_GBR1 = []
+    Temp_InSoil_GBR1 = []
+    Temp_15AboveBed_GBR1 = []
+    Temp_60AboveBed_GBR1 = []
+    Temp_UnderBed_GR2 = []
+    Temp_InSoil_GR2 = []
+    Temp_15AboveBed_GR2 = []
+    Temp_60AboveBed_GR2 = []
+    Temp_UnderBed_GR1 = []
+    Temp_InSoil_GR1 = []
+    Temp_15AboveBed_GR1 = []
+    Temp_60AboveBed_GR1 = []
+ 
+# Then we transform the data into float so that we can manipulate it with Python and put it in the right list
+
+    for i in range (2,len(data_table)-1):
+        if int(data_table[0][i][11:13])-int(data_table[0][i-1][11:13])>1 or int(data_table[0][i+1][11:13])-int(data_table[0][i][11:13])>1:
+            Time.append(datetime.datetime(2022,int(data_table[0][i][3:5]),int(data_table[0][i][0:2]),int(data_table[0][i][11:13]),int(data_table[0][i][14:16])))
+            Temp_CntrlRoof.append(float(data_table[5][i]))
+            Temp_UnderBed_GBR2.append(float(data_table[6][i]))
+            Temp_InSoil_GBR2.append(float(data_table[7][i]))
+            Temp_15AboveBed_GBR2.append(float(data_table[8][i]))
+            Temp_60AboveBed_GBR2.append(float(data_table[9][i]))
+            Temp_UnderBed_GBR1.append(float(data_table[10][i]))
+            Temp_InSoil_GBR1.append(float(data_table[11][i]))
+            Temp_15AboveBed_GBR1.append(float(data_table[12][i]))
+            Temp_60AboveBed_GBR1.append(float(data_table[13][i]))
+            Temp_UnderBed_GR2.append(float(data_table[14][i]))
+            Temp_InSoil_GR2.append(float(data_table[15][i]))
+            Temp_15AboveBed_GR2.append(float(data_table[16][i]))
+            Temp_60AboveBed_GR2.append(float(data_table[17][i]))
+            Temp_UnderBed_GR1.append(float(data_table[18][i]))
+            Temp_InSoil_GR1.append(float(data_table[19][i]))
+            Temp_15AboveBed_GR1.append(float(data_table[20][i]))
+            Temp_60AboveBed_GR1.append(float(data_table[21][i]))
+        else :
+            Time.append(datetime.datetime(2022,int(data_table[0][i][3:5]),int(data_table[0][i][0:2]),int(data_table[0][i][11:13]),int(data_table[0][i][14:16])))
+            Temp_CntrlRoof.append((float(data_table[5][i-1]) + float(data_table[5][i])+float(data_table[5][i+1]))/3)
+            Temp_UnderBed_GBR2.append((float(data_table[6][i-1])+float(data_table[6][i])+float(data_table[6][i+1]))/3)
+            Temp_InSoil_GBR2.append((float(data_table[7][i-1])+float(data_table[7][i])+float(data_table[7][i+1]))/3)
+            Temp_15AboveBed_GBR2.append((float(data_table[8][i-1])+float(data_table[8][i])+float(data_table[8][i+1]))/3)
+            Temp_60AboveBed_GBR2.append((float(data_table[9][i-1])+float(data_table[9][i])+float(data_table[9][i+1]))/3)
+            Temp_UnderBed_GBR1.append((float(data_table[10][i-1])+float(data_table[10][i])+float(data_table[10][i+1]))/3)
+            Temp_InSoil_GBR1.append((float(data_table[11][i-1])+float(data_table[11][i])+float(data_table[11][i+1]))/3)
+            Temp_15AboveBed_GBR1.append((float(data_table[12][i-1])+float(data_table[12][i])+float(data_table[12][i+1]))/3)
+            Temp_60AboveBed_GBR1.append((float(data_table[13][i-1])+float(data_table[13][i])+float(data_table[13][i+1]))/3)
+            Temp_UnderBed_GR2.append((float(data_table[14][i-1])+float(data_table[14][i])+float(data_table[14][i+1]))/3)
+            Temp_InSoil_GR2.append((float(data_table[15][i-1])+float(data_table[15][i])+float(data_table[15][i+1]))/3)
+            Temp_15AboveBed_GR2.append((float(data_table[16][i-1])+float(data_table[16][i])+float(data_table[16][i+1]))/3)
+            Temp_60AboveBed_GR2.append((float(data_table[17][i-1])+float(data_table[17][i])+float(data_table[17][i+1]))/3)
+            Temp_UnderBed_GR1.append((float(data_table[18][i-1])+float(data_table[18][i])+float(data_table[18][i+1]))/3)
+            Temp_InSoil_GR1.append((float(data_table[19][i-1])+float(data_table[19][i])+float(data_table[19][i+1]))/3)
+            Temp_15AboveBed_GR1.append((float(data_table[20][i-1])+float(data_table[20][i])+float(data_table[20][i+1]))/3)
+            Temp_60AboveBed_GR1.append((float(data_table[21][i-1])+float(data_table[21][i])+float(data_table[21][i+1]))/3)
+           
+    
+# Finaly we visualize the temperature according to the bed we are interested in
+
+    if n==1 :
+        plt.plot_date(Time, Temp_60AboveBed_GBR1,"-", label = 'Temperature 60cm Above Bed_GBR1')
+        plt.plot_date(Time, Temp_15AboveBed_GBR1,"-", label = 'Temperature 15cm Above Bed_GBR1')
+        plt.plot_date(Time, Temp_InSoil_GBR1,"-", label = 'Temperature of Soil_GBR1')
+        plt.plot_date(Time, Temp_UnderBed_GBR1,"-", label = 'Temperature under the bed_GBR1')
+        plt.plot_date(Time, Temp_CntrlRoof,"-", label = 'Temperature of Control Roof')
+        plt.legend()
+        plt.title("Denoised Temperatures of the GRB1")
+        plt.show()
+        
+    elif n==2 :
+        plt.plot_date(Time, Temp_60AboveBed_GBR2,"-", label = 'Temperature 60cm Above Bed_GBR2')
+        plt.plot_date(Time, Temp_15AboveBed_GBR2,"-", label = 'Temperature 15cm Above Bed_GBR2')
+        plt.plot_date(Time, Temp_InSoil_GBR2,"-", label = 'Temperature of Soil_GBR2')
+        plt.plot_date(Time, Temp_UnderBed_GBR2,"-", label = 'Temperature under the bed_GBR2')
+        plt.plot_date(Time, Temp_CntrlRoof,"-", label = 'Temperature of Control Roof')
+        plt.legend()
+        plt.title("Denoised Temperatures of the GRB2")
+        plt.show()
+        
+    elif n==3 :
+        plt.plot_date(Time, Temp_60AboveBed_GR1,"-", label = 'Temperature 60cm Above Bed_GR1')
+        plt.plot_date(Time, Temp_15AboveBed_GR1,"-", label = 'Temperature 15cm Above Bed_GR1')
+        plt.plot_date(Time, Temp_InSoil_GR1,"-", label = 'Temperature of Soil_GR1')
+        plt.plot_date(Time, Temp_UnderBed_GR1,"-", label = 'Temperature under the bed_GR1')
+        plt.plot_date(Time, Temp_CntrlRoof,"-", label = 'Temperature of Control Roof')
+        plt.legend()
+        plt.title("Denoised Temperatures of the GR1")
+        plt.show()
+        
+    elif n==4 :
+        plt.plot_date(Time, Temp_60AboveBed_GR2,"-", label = 'Temperature 60cm Above Bed_GR2')
+        plt.plot_date(Time, Temp_15AboveBed_GR2,"-", label = 'Temperature 15cm Above Bed_GR2')
+        plt.plot_date(Time, Temp_InSoil_GR2,"-", label = 'Temperature of Soil_GR2')
+        plt.plot_date(Time, Temp_UnderBed_GR2,"-", label = 'Temperature under the bed_GR2')
+        plt.plot_date(Time, Temp_CntrlRoof,"-", label = 'Temperature of Control Roof')
+        plt.legend()
+        plt.title("Denoised Temperatures of the GR2")
+        plt.show()
+
+
+#Second try (taking average of n=+-2 around the data)
+def denoised_temp_v2(data_table,n):
+
+#Fisrt we name the different lists of data we want to visualize  
+    
+    Time = []
+    Temp_CntrlRoof = []
+    Temp_UnderBed_GBR2 = []
+    Temp_InSoil_GBR2 = []
+    Temp_15AboveBed_GBR2 = []
+    Temp_60AboveBed_GBR2 = []
+    Temp_UnderBed_GBR1 = []
+    Temp_InSoil_GBR1 = []
+    Temp_15AboveBed_GBR1 = []
+    Temp_60AboveBed_GBR1 = []
+    Temp_UnderBed_GR2 = []
+    Temp_InSoil_GR2 = []
+    Temp_15AboveBed_GR2 = []
+    Temp_60AboveBed_GR2 = []
+    Temp_UnderBed_GR1 = []
+    Temp_InSoil_GR1 = []
+    Temp_15AboveBed_GR1 = []
+    Temp_60AboveBed_GR1 = []
+ 
+# Then we transform the data into float so that we can manipulate it with Python and put it in the right list
+
+    for i in range (3,len(data_table)-2):
+        if int(data_table[0][i][11:13])-int(data_table[0][i-1][11:13])>1 or int(data_table[0][i+1][11:13])-int(data_table[0][i][11:13])>1 or int(data_table[0][i-1][11:13])-int(data_table[0][i-2][11:13])>1 or int(data_table[0][i+2][11:13])-int(data_table[0][i+1][11:13])>1:
+            Time.append(datetime.datetime(2022,int(data_table[0][i][3:5]),int(data_table[0][i][0:2]),int(data_table[0][i][11:13]),int(data_table[0][i][14:16])))
+            Temp_CntrlRoof.append(float(data_table[5][i]))
+            Temp_UnderBed_GBR2.append(float(data_table[6][i]))
+            Temp_InSoil_GBR2.append(float(data_table[7][i]))
+            Temp_15AboveBed_GBR2.append(float(data_table[8][i]))
+            Temp_60AboveBed_GBR2.append(float(data_table[9][i]))
+            Temp_UnderBed_GBR1.append(float(data_table[10][i]))
+            Temp_InSoil_GBR1.append(float(data_table[11][i]))
+            Temp_15AboveBed_GBR1.append(float(data_table[12][i]))
+            Temp_60AboveBed_GBR1.append(float(data_table[13][i]))
+            Temp_UnderBed_GR2.append(float(data_table[14][i]))
+            Temp_InSoil_GR2.append(float(data_table[15][i]))
+            Temp_15AboveBed_GR2.append(float(data_table[16][i]))
+            Temp_60AboveBed_GR2.append(float(data_table[17][i]))
+            Temp_UnderBed_GR1.append(float(data_table[18][i]))
+            Temp_InSoil_GR1.append(float(data_table[19][i]))
+            Temp_15AboveBed_GR1.append(float(data_table[20][i]))
+            Temp_60AboveBed_GR1.append(float(data_table[21][i]))
+        else :
+            Time.append(datetime.datetime(2022,int(data_table[0][i][3:5]),int(data_table[0][i][0:2]),int(data_table[0][i][11:13]),int(data_table[0][i][14:16])))
+            Temp_CntrlRoof.append((float(data_table[5][i-2]) + float(data_table[5][i-1]) + float(data_table[5][i])+float(data_table[5][i+1])+float(data_table[5][i+2]))/5)
+            Temp_UnderBed_GBR2.append((float(data_table[6][i-2])+float(data_table[6][i-1])+float(data_table[6][i])+float(data_table[6][i+1])+float(data_table[6][i+2]))/5)
+            Temp_InSoil_GBR2.append((float(data_table[7][i-2])+float(data_table[7][i-1])+float(data_table[7][i])+float(data_table[7][i+1])+float(data_table[6][i+2]))/5)
+            Temp_15AboveBed_GBR2.append((float(data_table[8][i-2])+float(data_table[8][i-1])+float(data_table[8][i])+float(data_table[8][i+1])+float(data_table[8][i+2]))/5)
+            Temp_60AboveBed_GBR2.append((float(data_table[9][i-2])+float(data_table[9][i-1])+float(data_table[9][i])+float(data_table[9][i+1])+float(data_table[9][i+2]))/5)
+            Temp_UnderBed_GBR1.append((float(data_table[10][i-2])+float(data_table[10][i-1])+float(data_table[10][i])+float(data_table[10][i+1])+float(data_table[10][i+2]))/5)
+            Temp_InSoil_GBR1.append((float(data_table[11][i-2])+float(data_table[11][i-1])+float(data_table[11][i])+float(data_table[11][i+1])+float(data_table[11][i+2]))/5)
+            Temp_15AboveBed_GBR1.append((float(data_table[12][i-2])+float(data_table[12][i-1])+float(data_table[12][i])+float(data_table[12][i+1])+float(data_table[12][i+2]))/5)
+            Temp_60AboveBed_GBR1.append((float(data_table[13][i-2])+float(data_table[13][i-1])+float(data_table[13][i])+float(data_table[13][i+1])+float(data_table[13][i+2]))/5)
+            Temp_UnderBed_GR2.append((float(data_table[14][i-2])+float(data_table[14][i-1])+float(data_table[14][i])+float(data_table[14][i+1])+float(data_table[14][i+2]))/5)
+            Temp_InSoil_GR2.append((float(data_table[15][i-2])+float(data_table[15][i-1])+float(data_table[15][i])+float(data_table[15][i+1])+float(data_table[15][i+2]))/5)
+            Temp_15AboveBed_GR2.append((float(data_table[16][i-2])+float(data_table[16][i-1])+float(data_table[16][i])+float(data_table[16][i+1])+float(data_table[16][i+2]))/5)
+            Temp_60AboveBed_GR2.append((float(data_table[17][i-2])+float(data_table[17][i-1])+float(data_table[17][i])+float(data_table[17][i+1])+float(data_table[17][i+2]))/5)
+            Temp_UnderBed_GR1.append((float(data_table[18][i-2])+float(data_table[18][i-1])+float(data_table[18][i])+float(data_table[18][i+1])+float(data_table[18][i+2]))/5)
+            Temp_InSoil_GR1.append((float(data_table[19][i-2])+float(data_table[19][i-1])+float(data_table[19][i])+float(data_table[19][i+1])+float(data_table[19][i+2]))/5)
+            Temp_15AboveBed_GR1.append((float(data_table[20][i-2])+float(data_table[20][i-1])+float(data_table[20][i])+float(data_table[20][i+1])+float(data_table[20][i+2]))/5)
+            Temp_60AboveBed_GR1.append((float(data_table[21][i-2])+float(data_table[21][i-1])+float(data_table[21][i])+float(data_table[21][i+1])+float(data_table[21][i+2]))/5)
+           
+    
+# Finaly we visualize the temperature according to the bed we are interested in
+
+    if n==1 :
+        plt.plot_date(Time, Temp_60AboveBed_GBR1,"-", label = 'Temperature 60cm Above Bed_GBR1')
+        plt.plot_date(Time, Temp_15AboveBed_GBR1,"-", label = 'Temperature 15cm Above Bed_GBR1')
+        plt.plot_date(Time, Temp_InSoil_GBR1,"-", label = 'Temperature of Soil_GBR1')
+        plt.plot_date(Time, Temp_UnderBed_GBR1,"-", label = 'Temperature under the bed_GBR1')
+        plt.plot_date(Time, Temp_CntrlRoof,"-", label = 'Temperature of Control Roof')
+        plt.legend()
+        plt.title("Denoised Temperatures of the GRB1")
+        plt.show()
+        
+    elif n==2 :
+        plt.plot_date(Time, Temp_60AboveBed_GBR2,"-", label = 'Temperature 60cm Above Bed_GBR2')
+        plt.plot_date(Time, Temp_15AboveBed_GBR2,"-", label = 'Temperature 15cm Above Bed_GBR2')
+        plt.plot_date(Time, Temp_InSoil_GBR2,"-", label = 'Temperature of Soil_GBR2')
+        plt.plot_date(Time, Temp_UnderBed_GBR2,"-", label = 'Temperature under the bed_GBR2')
+        plt.plot_date(Time, Temp_CntrlRoof,"-", label = 'Temperature of Control Roof')
+        plt.legend()
+        plt.title("Denoised Temperatures of the GRB2")
+        plt.show()
+        
+    elif n==3 :
+        plt.plot_date(Time, Temp_60AboveBed_GR1,"-", label = 'Temperature 60cm Above Bed_GR1')
+        plt.plot_date(Time, Temp_15AboveBed_GR1,"-", label = 'Temperature 15cm Above Bed_GR1')
+        plt.plot_date(Time, Temp_InSoil_GR1,"-", label = 'Temperature of Soil_GR1')
+        plt.plot_date(Time, Temp_UnderBed_GR1,"-", label = 'Temperature under the bed_GR1')
+        plt.plot_date(Time, Temp_CntrlRoof,"-", label = 'Temperature of Control Roof')
+        plt.legend()
+        plt.title("Denoised Temperatures of the GR1")
+        plt.show()
+        
+    elif n==4 :
+        plt.plot_date(Time, Temp_60AboveBed_GR2,"-", label = 'Temperature 60cm Above Bed_GR2')
+        plt.plot_date(Time, Temp_15AboveBed_GR2,"-", label = 'Temperature 15cm Above Bed_GR2')
+        plt.plot_date(Time, Temp_InSoil_GR2,"-", label = 'Temperature of Soil_GR2')
+        plt.plot_date(Time, Temp_UnderBed_GR2,"-", label = 'Temperature under the bed_GR2')
+        plt.plot_date(Time, Temp_CntrlRoof,"-", label = 'Temperature of Control Roof')
+        plt.legend()
+        plt.title("Denoised Temperatures of the GR2")
+        plt.show()
+# 3/c) Comparing lists to see if using all of them is relevant
+
+def correlation(data_table,n):
+    
+
+# First we name the Sum we are gonna use in the code to access the average (sum(data)/numb(data))
+    Sum_Temp_CntrlRoof = 0
+    Sum_Temp_UnderBed_GBR2 = 0
+    Sum_Temp_InSoil_GBR2 = 0
+    Sum_Temp_15AboveBed_GBR2 = 0
+    Sum_Temp_60AboveBed_GBR2 = 0
+    Sum_Temp_UnderBed_GBR1 = 0
+    Sum_Temp_InSoil_GBR1 = 0
+    Sum_Temp_15AboveBed_GBR1 = 0
+    Sum_Temp_60AboveBed_GBR1 = 0
+    Sum_Temp_UnderBed_GR2 = 0
+    Sum_Temp_InSoil_GR2 = 0
+    Sum_Temp_15AboveBed_GR2 = 0
+    Sum_Temp_60AboveBed_GR2 = 0
+    Sum_Temp_UnderBed_GR1 = 0
+    Sum_Temp_InSoil_GR1 = 0
+    Sum_Temp_15AboveBed_GR1 = 0
+    Sum_Temp_60AboveBed_GR1 = 0
+    S=0
+ 
+# Then we sum up each data in each list to get the average of each list
+
+    for i in range (1,len(data_table)):
+            
+            
+            Sum_Temp_CntrlRoof+=float(data_table[5][i])
+            
+            Sum_Temp_UnderBed_GBR2+=float(data_table[6][i])
+            Sum_Temp_InSoil_GBR2+=float(data_table[7][i])
+            Sum_Temp_15AboveBed_GBR2+=float(data_table[8][i])
+            Sum_Temp_60AboveBed_GBR2+=float(data_table[9][i])
+            
+            Sum_Temp_UnderBed_GBR1+=float(data_table[10][i])
+            Sum_Temp_InSoil_GBR1+=float(data_table[11][i])
+            Sum_Temp_15AboveBed_GBR1+=float(data_table[12][i])
+            Sum_Temp_60AboveBed_GBR1+=float(data_table[13][i])
+            
+            Sum_Temp_UnderBed_GR2+=float(data_table[14][i])
+            Sum_Temp_InSoil_GR2+=float(data_table[15][i])
+            Sum_Temp_15AboveBed_GR2+=float(data_table[16][i])
+            Sum_Temp_60AboveBed_GR2+=float(data_table[17][i])
+            
+            Sum_Temp_UnderBed_GR1+=float(data_table[18][i])
+            Sum_Temp_InSoil_GR1+=float(data_table[19][i])
+            Sum_Temp_15AboveBed_GR1+=float(data_table[20][i])
+            Sum_Temp_60AboveBed_GR1+=float(data_table[21][i])
+            
+            S+=1
+    
+#Then we calculate the average of each list :
+    Avg_Temp_CntrlRoof=Sum_Temp_CntrlRoof/S
+    
+    Avg_Temp_UnderBed_GBR2=Sum_Temp_UnderBed_GBR2/S
+    Avg_Temp_InSoil_GBR2=Sum_Temp_InSoil_GBR2/S
+    Avg_Temp_15AboveBed_GBR2=Sum_Temp_15AboveBed_GBR2/S
+    Avg_Temp_60AboveBed_GBR2=Sum_Temp_60AboveBed_GBR2/S
+
+    Avg_Temp_UnderBed_GBR1=Sum_Temp_UnderBed_GBR1/S
+    Avg_Temp_InSoil_GBR1=Sum_Temp_15AboveBed_GBR1/S
+    Avg_Temp_15AboveBed_GBR1=Sum_Temp_15AboveBed_GBR1/S
+    Avg_Temp_60AboveBed_GBR1=Sum_Temp_60AboveBed_GBR1/S
+    
+    Avg_Temp_UnderBed_GR2=Sum_Temp_UnderBed_GR2/S
+    Avg_Temp_InSoil_GR2=Sum_Temp_InSoil_GR2/S
+    Avg_Temp_15AboveBed_GR2=Sum_Temp_15AboveBed_GR2/S
+    Avg_Temp_60AboveBed_GR2=Sum_Temp_60AboveBed_GR2/S
+    
+    Avg_Temp_UnderBed_GR1=Sum_Temp_UnderBed_GR1/S
+    Avg_Temp_InSoil_GR1=Sum_Temp_InSoil_GR1/S
+    Avg_Temp_15AboveBed_GR1=Sum_Temp_15AboveBed_GR1/S
+    Avg_Temp_60AboveBed_GR1=Sum_Temp_60AboveBed_GR1/S
+    
+#Then we calculate the variance and covariance of the list we are interested in 
+    Variance_Sum_Temp_CntrlRoof = 0
+    
+    Variance_Sum_Temp_UnderBed_GBR2 = 0
+    Variance_Sum_Temp_InSoil_GBR2 = 0
+    Variance_Sum_Temp_15AboveBed_GBR2 = 0
+    Variance_Sum_Temp_60AboveBed_GBR2 = 0
+    Covariance_Sum_Und_InS_GBR2 = 0
+    Covariance_Sum_Und_15A_GBR2 = 0
+    Covariance_Sum_Und_60A_GBR2 = 0
+    Covariance_Sum_InS_15A_GBR2 = 0
+    Covariance_Sum_InS_60A_GBR2 = 0
+    Covariance_Sum_15A_60A_GBR2 = 0
+    
+    Variance_Sum_Temp_UnderBed_GBR1 = 0
+    Variance_Sum_Temp_InSoil_GBR1 = 0
+    Variance_Sum_Temp_15AboveBed_GBR1 = 0
+    Variance_Sum_Temp_60AboveBed_GBR1 = 0
+    Covariance_Sum_Und_InS_GBR1 = 0
+    Covariance_Sum_Und_15A_GBR1 = 0
+    Covariance_Sum_Und_60A_GBR1 = 0
+    Covariance_Sum_InS_15A_GBR1 = 0
+    Covariance_Sum_InS_60A_GBR1 = 0
+    Covariance_Sum_15A_60A_GBR1 = 0
+    
+    Variance_Sum_Temp_UnderBed_GR2 = 0
+    Variance_Sum_Temp_InSoil_GR2 = 0
+    Variance_Sum_Temp_15AboveBed_GR2 = 0
+    Variance_Sum_Temp_60AboveBed_GR2 = 0
+    Covariance_Sum_Und_InS_GR2 = 0
+    Covariance_Sum_Und_15A_GR2 = 0
+    Covariance_Sum_Und_60A_GR2 = 0
+    Covariance_Sum_InS_15A_GR2 = 0
+    Covariance_Sum_InS_60A_GR2 = 0
+    Covariance_Sum_15A_60A_GR2 = 0
+    
+    Variance_Sum_Temp_UnderBed_GR1 = 0
+    Variance_Sum_Temp_InSoil_GR1 = 0
+    Variance_Sum_Temp_15AboveBed_GR1 = 0
+    Variance_Sum_Temp_60AboveBed_GR1 = 0
+    Covariance_Sum_Und_InS_GR1 = 0
+    Covariance_Sum_Und_15A_GR1 = 0
+    Covariance_Sum_Und_60A_GR1 = 0
+    Covariance_Sum_InS_15A_GR1 = 0
+    Covariance_Sum_InS_60A_GR1 = 0
+    Covariance_Sum_15A_60A_GR1 = 0
+
+    if n==2:
+        for i in range (1,len(data_table)) :
+            
+            Variance_Sum_Temp_UnderBed_GBR2 += (float(data_table[6][i])-Avg_Temp_UnderBed_GBR2)**2
+            Variance_Sum_Temp_InSoil_GBR2 += (float(data_table[7][i])-Avg_Temp_InSoil_GBR2)**2
+            Variance_Sum_Temp_15AboveBed_GBR2 += (float(data_table[8][i])-Avg_Temp_15AboveBed_GBR2)**2
+            Variance_Sum_Temp_60AboveBed_GBR2 += (float(data_table[9][i])-Avg_Temp_60AboveBed_GBR2)**2
+            Covariance_Sum_Und_InS_GBR2 += (float(data_table[6][i])-Avg_Temp_UnderBed_GBR2)*(float(data_table[7][i])-Avg_Temp_InSoil_GBR2)
+            Covariance_Sum_Und_15A_GBR2 += (float(data_table[6][i])-Avg_Temp_UnderBed_GBR2)*(float(data_table[8][i])-Avg_Temp_15AboveBed_GBR2)
+            Covariance_Sum_Und_60A_GBR2 += (float(data_table[6][i])-Avg_Temp_UnderBed_GBR2)*(float(data_table[9][i])-Avg_Temp_60AboveBed_GBR2)
+            Covariance_Sum_InS_15A_GBR2 += (float(data_table[7][i])-Avg_Temp_InSoil_GBR2)*(float(data_table[8][i])-Avg_Temp_15AboveBed_GBR2)
+            Covariance_Sum_InS_60A_GBR2 += (float(data_table[7][i])-Avg_Temp_InSoil_GBR2)*(float(data_table[9][i])-Avg_Temp_60AboveBed_GBR2)
+            Covariance_Sum_15A_60A_GBR2 += (float(data_table[8][i])-Avg_Temp_15AboveBed_GBR2)*(float(data_table[9][i])-Avg_Temp_60AboveBed_GBR2)
+    
+        Variance_Temp_UnderBed_GBR2 = Variance_Sum_Temp_UnderBed_GBR2/S
+        Variance_Temp_InSoil_GBR2 = Variance_Sum_Temp_InSoil_GBR2/S
+        Variance_Temp_15AboveBed_GBR2 = Variance_Sum_Temp_15AboveBed_GBR2/S
+        Variance_Temp_60AboveBed_GBR2 = Variance_Sum_Temp_60AboveBed_GBR2/S
+        Covariance_Und_InS_GBR2 = Covariance_Sum_Und_InS_GBR2/S
+        Covariance_Und_15A_GBR2 = Covariance_Sum_Und_15A_GBR2/S
+        Covariance_Und_60A_GBR2 = Covariance_Sum_Und_60A_GBR2/S
+        Covariance_InS_15A_GBR2 = Covariance_Sum_InS_15A_GBR2/S
+        Covariance_InS_60A_GBR2 = Covariance_Sum_InS_60A_GBR2/S
+        Covariance_15A_60A_GBR2 = Covariance_Sum_15A_60A_GBR2/S
+        
+        Correlation_Und_InS_GBR2 = Covariance_Und_InS_GBR2*100/(((Variance_Temp_UnderBed_GBR2)**(1/2))*((Variance_Temp_InSoil_GBR2)**(1/2)))
+        Correlation_Und_15A_GBR2 = Covariance_Und_15A_GBR2*100/(((Variance_Temp_UnderBed_GBR2)**(1/2))*((Variance_Temp_15AboveBed_GBR2)**(1/2)))
+        Correlation_Und_60A_GBR2 = Covariance_Und_60A_GBR2*100/(((Variance_Temp_UnderBed_GBR2)**(1/2))*((Variance_Temp_60AboveBed_GBR2)*(1/2)))
+        Correlation_InS_15A_GBR2 = Covariance_InS_15A_GBR2*100/(((Variance_Temp_InSoil_GBR2)**(1/2))*((Variance_Temp_15AboveBed_GBR2)**(1/2)))
+        Correlation_InS_60A_GBR2 = Covariance_InS_60A_GBR2*100/(((Variance_Temp_InSoil_GBR2)**(1/2))*((Variance_Temp_60AboveBed_GBR2)**(1/2)))
+        Correlation_15A_60A_GBR2 = Covariance_15A_60A_GBR2*100/(((Variance_Temp_15AboveBed_GBR2)**(1/2))*((Variance_Temp_60AboveBed_GBR2)**(1/2)))
+        
+        print('In the bed GBR2, \n the correlation between the temperature under the bed and in the soil is r=',round(Correlation_Und_InS_GBR2,2),'% \n the correlation between the temperature under the bed and 15cm above it is r=',round(Correlation_Und_15A_GBR2,2),'% \n the correlation between the temperature under the bed and 60cm above it is r=',round(Correlation_Und_60A_GBR2,2),'% \n the correlation between the temperature in the soil and 15cm above the bed is r=',round(Correlation_InS_15A_GBR2,2),'% \n the correlation between the temperature in the soil and 60cm above th bed is r=',round(Correlation_InS_60A_GBR2,2),'% \n the correlation between the temperature 15cm above the bed and 60cm above it r=',round(Correlation_15A_60A_GBR2,2),'%')
+    
+    if n==1:
+        for i in range (1,len(data_table)) :
+            
+            Variance_Sum_Temp_UnderBed_GBR1 += (float(data_table[10][i])-Avg_Temp_UnderBed_GBR1)**2
+            Variance_Sum_Temp_InSoil_GBR1 += (float(data_table[11][i])-Avg_Temp_InSoil_GBR1)**2
+            Variance_Sum_Temp_15AboveBed_GBR1 += (float(data_table[12][i])-Avg_Temp_15AboveBed_GBR1)**2
+            Variance_Sum_Temp_60AboveBed_GBR1 += (float(data_table[13][i])-Avg_Temp_60AboveBed_GBR1)**2
+            Covariance_Sum_Und_InS_GBR1 += (float(data_table[10][i])-Avg_Temp_UnderBed_GBR1)*(float(data_table[11][i])-Avg_Temp_InSoil_GBR1)
+            Covariance_Sum_Und_15A_GBR1 += (float(data_table[10][i])-Avg_Temp_UnderBed_GBR1)*(float(data_table[12][i])-Avg_Temp_15AboveBed_GBR1)
+            Covariance_Sum_Und_60A_GBR1 += (float(data_table[10][i])-Avg_Temp_UnderBed_GBR1)*(float(data_table[13][i])-Avg_Temp_60AboveBed_GBR1)
+            Covariance_Sum_InS_15A_GBR1 += (float(data_table[11][i])-Avg_Temp_InSoil_GBR1)*(float(data_table[12][i])-Avg_Temp_15AboveBed_GBR1)
+            Covariance_Sum_InS_60A_GBR1 += (float(data_table[11][i])-Avg_Temp_InSoil_GBR1)*(float(data_table[13][i])-Avg_Temp_60AboveBed_GBR1)
+            Covariance_Sum_15A_60A_GBR1 += (float(data_table[12][i])-Avg_Temp_15AboveBed_GBR1)*(float(data_table[13][i])-Avg_Temp_60AboveBed_GBR1)
+         
+        Variance_Temp_UnderBed_GBR1 = Variance_Sum_Temp_UnderBed_GBR1/S
+        Variance_Temp_InSoil_GBR1 = Variance_Sum_Temp_InSoil_GBR1/S
+        Variance_Temp_15AboveBed_GBR1 = Variance_Sum_Temp_15AboveBed_GBR1/S
+        Variance_Temp_60AboveBed_GBR1 = Variance_Sum_Temp_60AboveBed_GBR1/S
+        Covariance_Und_InS_GBR1 = Covariance_Sum_Und_InS_GBR1/S
+        Covariance_Und_15A_GBR1 = Covariance_Sum_Und_15A_GBR1/S
+        Covariance_Und_60A_GBR1 = Covariance_Sum_Und_60A_GBR1/S
+        Covariance_InS_15A_GBR1 = Covariance_Sum_InS_15A_GBR1/S
+        Covariance_InS_60A_GBR1 = Covariance_Sum_InS_60A_GBR1/S
+        Covariance_15A_60A_GBR1 = Covariance_Sum_15A_60A_GBR1/S
+        
+        Correlation_Und_InS_GBR1 = Covariance_Und_InS_GBR1*100/(((Variance_Temp_UnderBed_GBR1)**(1/2))*((Variance_Temp_InSoil_GBR1)**(1/2)))
+        Correlation_Und_15A_GBR1 = Covariance_Und_15A_GBR1*100/(((Variance_Temp_UnderBed_GBR1)**(1/2))*((Variance_Temp_15AboveBed_GBR1)**(1/2)))
+        Correlation_Und_60A_GBR1 = Covariance_Und_60A_GBR1*100/(((Variance_Temp_UnderBed_GBR1)**(1/2))*((Variance_Temp_60AboveBed_GBR1)*(1/2)))
+        Correlation_InS_15A_GBR1 = Covariance_InS_15A_GBR1*100/(((Variance_Temp_InSoil_GBR1)**(1/2))*((Variance_Temp_15AboveBed_GBR1)**(1/2)))
+        Correlation_InS_60A_GBR1 = Covariance_InS_60A_GBR1*100/(((Variance_Temp_InSoil_GBR1)**(1/2))*((Variance_Temp_60AboveBed_GBR1)**(1/2)))
+        Correlation_15A_60A_GBR1 = Covariance_15A_60A_GBR1*100/(((Variance_Temp_15AboveBed_GBR1)**(1/2))*((Variance_Temp_60AboveBed_GBR1)**(1/2)))
+        
+        print('In the bed GBR1, \n the correlation between the temperature under the bed and in the soil is r=',round(Correlation_Und_InS_GBR1,2),'% \n the correlation between the temperature under the bed and 15cm above it is r=',round(Correlation_Und_15A_GBR1,2),'% \n the correlation between the temperature under the bed and 60cm above it is r=',round(Correlation_Und_60A_GBR1,2),'% \n the correlation between the temperature in the soil and 15cm above the bed is r=',round(Correlation_InS_15A_GBR1,2),'% \n the correlation between the temperature in the soil and 60cm above th bed is r=',round(Correlation_InS_60A_GBR1,2),'% \n the correlation between the temperature 15cm above the bed and 60cm above it r=',round(Correlation_15A_60A_GBR1,2),'%')
+        
+    if n==4:
+        for i in range (1,len(data_table)) :
+            
+            Variance_Sum_Temp_UnderBed_GR2 += (float(data_table[14][i])-Avg_Temp_UnderBed_GR2)**2
+            Variance_Sum_Temp_InSoil_GR2 += (float(data_table[15][i])-Avg_Temp_InSoil_GR2)**2
+            Variance_Sum_Temp_15AboveBed_GR2 += (float(data_table[16][i])-Avg_Temp_15AboveBed_GR2)**2
+            Variance_Sum_Temp_60AboveBed_GR2 += (float(data_table[17][i])-Avg_Temp_60AboveBed_GR2)**2
+            Covariance_Sum_Und_InS_GR2 += (float(data_table[14][i])-Avg_Temp_UnderBed_GR2)*(float(data_table[15][i])-Avg_Temp_InSoil_GR2)
+            Covariance_Sum_Und_15A_GR2 += (float(data_table[14][i])-Avg_Temp_UnderBed_GR2)*(float(data_table[16][i])-Avg_Temp_15AboveBed_GR2)
+            Covariance_Sum_Und_60A_GR2 += (float(data_table[14][i])-Avg_Temp_UnderBed_GR2)*(float(data_table[17][i])-Avg_Temp_60AboveBed_GR2)
+            Covariance_Sum_InS_15A_GR2 += (float(data_table[15][i])-Avg_Temp_InSoil_GR2)*(float(data_table[16][i])-Avg_Temp_15AboveBed_GR2)
+            Covariance_Sum_InS_60A_GR2 += (float(data_table[15][i])-Avg_Temp_InSoil_GR2)*(float(data_table[17][i])-Avg_Temp_60AboveBed_GR2)
+            Covariance_Sum_15A_60A_GR2 += (float(data_table[16][i])-Avg_Temp_15AboveBed_GR2)*(float(data_table[17][i])-Avg_Temp_60AboveBed_GR2)
+    
+        Variance_Temp_UnderBed_GR2 = Variance_Sum_Temp_UnderBed_GR2/S
+        Variance_Temp_InSoil_GR2 = Variance_Sum_Temp_InSoil_GR2/S
+        Variance_Temp_15AboveBed_GR2 = Variance_Sum_Temp_15AboveBed_GR2/S
+        Variance_Temp_60AboveBed_GR2 = Variance_Sum_Temp_60AboveBed_GR2/S
+        Covariance_Und_InS_GR2 = Covariance_Sum_Und_InS_GR2/S
+        Covariance_Und_15A_GR2 = Covariance_Sum_Und_15A_GR2/S
+        Covariance_Und_60A_GR2 = Covariance_Sum_Und_60A_GR2/S
+        Covariance_InS_15A_GR2 = Covariance_Sum_InS_15A_GR2/S
+        Covariance_InS_60A_GR2 = Covariance_Sum_InS_60A_GR2/S
+        Covariance_15A_60A_GR2 = Covariance_Sum_15A_60A_GR2/S
+        
+        Correlation_Und_InS_GR2 = Covariance_Und_InS_GR2*100/(((Variance_Temp_UnderBed_GR2)**(1/2))*((Variance_Temp_InSoil_GR2)**(1/2)))
+        Correlation_Und_15A_GR2 = Covariance_Und_15A_GR2*100/(((Variance_Temp_UnderBed_GR2)**(1/2))*((Variance_Temp_15AboveBed_GR2)**(1/2)))
+        Correlation_Und_60A_GR2 = Covariance_Und_60A_GR2*100/(((Variance_Temp_UnderBed_GR2)**(1/2))*((Variance_Temp_60AboveBed_GR2)*(1/2)))
+        Correlation_InS_15A_GR2 = Covariance_InS_15A_GR2*100/(((Variance_Temp_InSoil_GR2)**(1/2))*((Variance_Temp_15AboveBed_GR2)**(1/2)))
+        Correlation_InS_60A_GR2 = Covariance_InS_60A_GR2*100/(((Variance_Temp_InSoil_GR2)**(1/2))*((Variance_Temp_60AboveBed_GR2)**(1/2)))
+        Correlation_15A_60A_GR2 = Covariance_15A_60A_GR2*100/(((Variance_Temp_15AboveBed_GR2)**(1/2))*((Variance_Temp_60AboveBed_GR2)**(1/2)))
+        
+        print('In the bed GR2, \n the correlation between the temperature under the bed and in the soil is r=',round(Correlation_Und_InS_GR2,2),'% \n the correlation between the temperature under the bed and 15cm above it is r=',round(Correlation_Und_15A_GR2,2),'% \n the correlation between the temperature under the bed and 60cm above it is r=',round(Correlation_Und_60A_GR2,2),'% \n the correlation between the temperature in the soil and 15cm above the bed is r=',round(Correlation_InS_15A_GR2,2),'% \n the correlation between the temperature in the soil and 60cm above th bed is r=',round(Correlation_InS_60A_GR2,2),'% \n the correlation between the temperature 15cm above the bed and 60cm above it r=',round(Correlation_15A_60A_GR2,2),'%')
+        
+    if n==3:
+        for i in range (1,len(data_table)) :
+            
+            Variance_Sum_Temp_UnderBed_GR1 += (float(data_table[18][i])-Avg_Temp_UnderBed_GR1)**2
+            Variance_Sum_Temp_InSoil_GR1 += (float(data_table[19][i])-Avg_Temp_InSoil_GR1)**2
+            Variance_Sum_Temp_15AboveBed_GR1 += (float(data_table[20][i])-Avg_Temp_15AboveBed_GR1)**2
+            Variance_Sum_Temp_60AboveBed_GR1 += (float(data_table[21][i])-Avg_Temp_60AboveBed_GR1)**2
+            Covariance_Sum_Und_InS_GR1 += (float(data_table[18][i])-Avg_Temp_UnderBed_GR1)*(float(data_table[19][i])-Avg_Temp_InSoil_GR1)
+            Covariance_Sum_Und_15A_GR1 += (float(data_table[18][i])-Avg_Temp_UnderBed_GR1)*(float(data_table[20][i])-Avg_Temp_15AboveBed_GR1)
+            Covariance_Sum_Und_60A_GR1 += (float(data_table[18][i])-Avg_Temp_UnderBed_GR1)*(float(data_table[21][i])-Avg_Temp_60AboveBed_GR1)
+            Covariance_Sum_InS_15A_GR1 += (float(data_table[19][i])-Avg_Temp_InSoil_GR1)*(float(data_table[20][i])-Avg_Temp_15AboveBed_GR1)
+            Covariance_Sum_InS_60A_GR1 += (float(data_table[19][i])-Avg_Temp_InSoil_GR1)*(float(data_table[21][i])-Avg_Temp_60AboveBed_GR1)
+            Covariance_Sum_15A_60A_GR1 += (float(data_table[20][i])-Avg_Temp_15AboveBed_GR1)*(float(data_table[21][i])-Avg_Temp_60AboveBed_GR1)
+    
+        Variance_Temp_UnderBed_GR1 = Variance_Sum_Temp_UnderBed_GR1/S
+        Variance_Temp_InSoil_GR1 = Variance_Sum_Temp_InSoil_GR1/S
+        Variance_Temp_15AboveBed_GR1 = Variance_Sum_Temp_15AboveBed_GR1/S
+        Variance_Temp_60AboveBed_GR1 = Variance_Sum_Temp_60AboveBed_GR1/S
+        Covariance_Und_InS_GR1 = Covariance_Sum_Und_InS_GR1/S
+        Covariance_Und_15A_GR1 = Covariance_Sum_Und_15A_GR1/S
+        Covariance_Und_60A_GR1 = Covariance_Sum_Und_60A_GR1/S
+        Covariance_InS_15A_GR1 = Covariance_Sum_InS_15A_GR1/S
+        Covariance_InS_60A_GR1 = Covariance_Sum_InS_60A_GR1/S
+        Covariance_15A_60A_GR1 = Covariance_Sum_15A_60A_GR1/S
+        
+        Correlation_Und_InS_GR1 = Covariance_Und_InS_GR1*100/(((Variance_Temp_UnderBed_GR1)**(1/2))*((Variance_Temp_InSoil_GR1)**(1/2)))
+        Correlation_Und_15A_GR1 = Covariance_Und_15A_GR1*100/(((Variance_Temp_UnderBed_GR1)**(1/2))*((Variance_Temp_15AboveBed_GR1)**(1/2)))
+        Correlation_Und_60A_GR1 = Covariance_Und_60A_GR1*100/(((Variance_Temp_UnderBed_GR1)**(1/2))*((Variance_Temp_60AboveBed_GR1)*(1/2)))
+        Correlation_InS_15A_GR1 = Covariance_InS_15A_GR1*100/(((Variance_Temp_InSoil_GR1)**(1/2))*((Variance_Temp_15AboveBed_GR1)**(1/2)))
+        Correlation_InS_60A_GR1 = Covariance_InS_60A_GR1*100/(((Variance_Temp_InSoil_GR1)**(1/2))*((Variance_Temp_60AboveBed_GR1)**(1/2)))
+        Correlation_15A_60A_GR1 = Covariance_15A_60A_GR1*100/(((Variance_Temp_15AboveBed_GR1)**(1/2))*((Variance_Temp_60AboveBed_GR1)**(1/2)))
+        
+        print('In the bed GR1, \n the correlation between the temperature under the bed and in the soil is r=',round(Correlation_Und_InS_GR1,2),'% \n the correlation between the temperature under the bed and 15cm above it is r=',round(Correlation_Und_15A_GR1,2),'% \n the correlation between the temperature under the bed and 60cm above it is r=',round(Correlation_Und_60A_GR1,2),'% \n the correlation between the temperature in the soil and 15cm above the bed is r=',round(Correlation_InS_15A_GR1,2),'% \n the correlation between the temperature in the soil and 60cm above th bed is r=',round(Correlation_InS_60A_GR1,2),'% \n the correlation between the temperature 15cm above the bed and 60cm above it r=',round(Correlation_15A_60A_GR1,2),'%')
+        
+# 4/ First manipulation of data
+# 4/a) Average Data on a day
+
+def avg_temp(data_table,a):      
+    #Fisrt we name the different lists of data we want to visualize  
+    
+    Avg_Temp_CntrlRoof = []
+    Avg_Temp_UnderBed_GBR2 = []
+    Avg_Temp_InSoil_GBR2 = []
+    Avg_Temp_15AboveBed_GBR2 = []
+    Avg_Temp_60AboveBed_GBR2 = []
+    Avg_Temp_UnderBed_GBR1 = []
+    Avg_Temp_InSoil_GBR1 = []
+    Avg_Temp_15AboveBed_GBR1 = []
+    Avg_Temp_60AboveBed_GBR1 = []
+    Avg_Temp_UnderBed_GR2 = []
+    Avg_Temp_InSoil_GR2 = []
+    Avg_Temp_15AboveBed_GR2 = []
+    Avg_Temp_60AboveBed_GR2 = []
+    Avg_Temp_UnderBed_GR1 = []
+    Avg_Temp_InSoil_GR1 = []
+    Avg_Temp_15AboveBed_GR1 = []
+    Avg_Temp_60AboveBed_GR1 = []
+    
+    # And we name the table we are gonna use in the code to access the average (sum(data)/numb(data))
+    Sum_Temp_CntrlRoof = np.zeros((24,12))
+    Sum_Temp_UnderBed_GBR2 = np.zeros((24,12))
+    Sum_Temp_InSoil_GBR2 = np.zeros((24,12))
+    Sum_Temp_15AboveBed_GBR2 = np.zeros((24,12))
+    Sum_Temp_60AboveBed_GBR2 = np.zeros((24,12))
+    Sum_Temp_UnderBed_GBR1 = np.zeros((24,12))
+    Sum_Temp_InSoil_GBR1 = np.zeros((24,12))
+    Sum_Temp_15AboveBed_GBR1 = np.zeros((24,12))
+    Sum_Temp_60AboveBed_GBR1 = np.zeros((24,12))
+    Sum_Temp_UnderBed_GR2 = np.zeros((24,12))
+    Sum_Temp_InSoil_GR2 = np.zeros((24,12))
+    Sum_Temp_15AboveBed_GR2 = np.zeros((24,12))
+    Sum_Temp_60AboveBed_GR2 = np.zeros((24,12))
+    Sum_Temp_UnderBed_GR1 = np.zeros((24,12))
+    Sum_Temp_InSoil_GR1 = np.zeros((24,12))
+    Sum_Temp_15AboveBed_GR1 = np.zeros((24,12))
+    Sum_Temp_60AboveBed_GR1 = np.zeros((24,12))
+    S = np.zeros((24,12))
+    
+    # Then we create the time we use as x lign for our day average plot
+    avg_time=[]      
+    for i in range (0,24):
+        for j in range (0,12):
+            avg_time.append((datetime.datetime(2022,1,1,i,j*5)))
+    
+    # Then sum up the data considering the hour and minutes linked to each lign
+    for i in range (1,len(data_table)-1):
+        for n in range (0,24):
+            if int(data_table[0][i][11:13])==n:
+                for m in range (0,12):
+                    if int(data_table[0][i][14:16])==(m*5):
+                        
+                        S[n][m]+=1
+                          
+                        Sum_Temp_CntrlRoof[n][m]+=float(data_table[5][i])
+                        Sum_Temp_UnderBed_GBR2[n][m]+=(float(data_table[6][i]))
+                        Sum_Temp_InSoil_GBR2[n][m]+=(float(data_table[7][i]))
+                        Sum_Temp_15AboveBed_GBR2[n][m]+=(float(data_table[8][i]))
+                        Sum_Temp_60AboveBed_GBR2[n][m]+=(float(data_table[9][i]))
+                        Sum_Temp_UnderBed_GBR1[n][m]+=(float(data_table[10][i]))
+                        Sum_Temp_InSoil_GBR1[n][m]+=(float(data_table[11][i]))
+                        Sum_Temp_15AboveBed_GBR1[n][m]+=(float(data_table[12][i]))
+                        Sum_Temp_60AboveBed_GBR1[n][m]+=(float(data_table[13][i]))
+                        Sum_Temp_UnderBed_GR2[n][m]+=(float(data_table[14][i]))
+                        Sum_Temp_InSoil_GR2[n][m]+=(float(data_table[15][i]))
+                        Sum_Temp_15AboveBed_GR2[n][m]+=(float(data_table[16][i]))
+                        Sum_Temp_60AboveBed_GR2[n][m]+=(float(data_table[17][i]))
+                        Sum_Temp_UnderBed_GR1[n][m]+=(float(data_table[18][i]))
+                        Sum_Temp_InSoil_GR1[n][m]+=(float(data_table[19][i]))
+                        Sum_Temp_15AboveBed_GR1[n][m]+=(float(data_table[20][i]))
+                        Sum_Temp_60AboveBed_GR1[n][m]+=(float(data_table[21][i]))
+                    
+    # Finaly we put them into the list that we will visualise in the plots
+    for n in range (0,24):
+        for m in range (0,12):
+                Avg_Temp_CntrlRoof.append(Sum_Temp_CntrlRoof[n][m]/S[n][m])
+                Avg_Temp_UnderBed_GBR2.append(Sum_Temp_UnderBed_GBR2[n][m]/S[n][m])
+                Avg_Temp_InSoil_GBR2.append(Sum_Temp_InSoil_GBR2[n][m]/S[n][m])
+                Avg_Temp_15AboveBed_GBR2.append(Sum_Temp_15AboveBed_GBR2[n][m]/S[n][m])
+                Avg_Temp_60AboveBed_GBR2.append(Sum_Temp_60AboveBed_GBR2[n][m]/S[n][m])
+                Avg_Temp_UnderBed_GBR1.append(Sum_Temp_UnderBed_GBR1[n][m]/S[n][m])
+                Avg_Temp_InSoil_GBR1.append(Sum_Temp_15AboveBed_GBR1[n][m]/S[n][m])
+                Avg_Temp_15AboveBed_GBR1.append(Sum_Temp_15AboveBed_GBR1[n][m]/S[n][m])
+                Avg_Temp_60AboveBed_GBR1.append(Sum_Temp_60AboveBed_GBR1[n][m]/S[n][m])
+                Avg_Temp_UnderBed_GR2.append(Sum_Temp_UnderBed_GR2[n][m]/S[n][m])
+                Avg_Temp_InSoil_GR2.append(Sum_Temp_InSoil_GR2[n][m]/S[n][m])
+                Avg_Temp_15AboveBed_GR2.append(Sum_Temp_15AboveBed_GR2[n][m]/S[n][m])
+                Avg_Temp_60AboveBed_GR2.append(Sum_Temp_60AboveBed_GR2[n][m]/S[n][m])
+                Avg_Temp_UnderBed_GR1.append(Sum_Temp_UnderBed_GR1[n][m]/S[n][m])
+                Avg_Temp_InSoil_GR1.append(Sum_Temp_InSoil_GR1[n][m]/S[n][m])
+                Avg_Temp_15AboveBed_GR1.append(Sum_Temp_15AboveBed_GR1[n][m]/S[n][m])
+                Avg_Temp_60AboveBed_GR1.append(Sum_Temp_60AboveBed_GR1[n][m]/S[n][m])
+                
+    # And we visualise the plot 
+    if a==1 :
+        plt.plot_date(avg_time, Avg_Temp_60AboveBed_GBR1,"-", label = 'Average Temperature 60cm Above Bed_GBR1')
+        plt.plot_date(avg_time, Avg_Temp_15AboveBed_GBR1,"-", label = 'Average Temperature 15cm Above Bed_GBR1')
+        plt.plot_date(avg_time, Avg_Temp_InSoil_GBR1,"-", label = 'Average Temperature of Soil_GBR1')
+        plt.plot_date(Time, Avg_Temp_UnderBed_GBR1,"-", label = 'Average Temperature under the bed_GBR1')
+        plt.plot_date(avg_time, Avg_Temp_CntrlRoof,"-", label = 'Average Temperature of Control Roof')
+        plt.legend()
+        plt.title("Average Temperatures of the GRB1")
+        plt.show()
+        
+    elif a==2 :
+        plt.plot_date(avg_time, Avg_Temp_60AboveBed_GBR2,"-", label = 'Average Temperature 60cm Above Bed_GBR2')
+        plt.plot_date(avg_time, Avg_Temp_15AboveBed_GBR2,"-", label = 'Average Temperature 15cm Above Bed_GBR2')
+        plt.plot_date(avg_time, Avg_Temp_InSoil_GBR2,"-", label = 'Average Temperature of Soil_GBR2')
+        plt.plot_date(Time, Avg_Temp_UnderBed_GBR2,"-", label = 'Average Temperature under the bed_GBR2')
+        plt.plot_date(avg_time, Avg_Temp_CntrlRoof,"-", label = 'Average Temperature of Control Roof')
+        plt.legend()
+        plt.title("Average Temperatures of the GRB2")
+        plt.show()
+        
+    elif a==3 :
+        plt.plot_date(avg_time, Avg_Temp_60AboveBed_GR1,"-", label = 'Average Temperature 60cm Above Bed_GR1')
+        plt.plot_date(avg_time, Avg_Temp_15AboveBed_GR1,"-", label = 'Average Temperature 15cm Above Bed_GR1')
+        plt.plot_date(avg_time, Avg_Temp_InSoil_GR1,"-", label = 'Average Temperature of Soil_GR1')
+        plt.plot_date(Time, Avg_Temp_UnderBed_GR1,"-", label = 'Average Temperature under the bed_GR1')
+        plt.plot_date(avg_time, Avg_Temp_CntrlRoof,"-", label = 'Average Temperature of Control Roof')
+        plt.legend()
+        plt.title("Average Temperatures of the GR1")
+        plt.show()
+        
+    elif a==4 :
+        plt.plot_date(avg_time, Avg_Temp_60AboveBed_GR2,"-", label = 'Average Temperature 60cm Above Bed_GR2')
+        plt.plot_date(avg_time, Avg_Temp_15AboveBed_GR2,"-", label = 'Avergae Temperature 15cm Above Bed_GR2')
+        plt.plot_date(avg_time, Avg_Temp_InSoil_GR2,"-", label = 'Avergae Temperature of Soil_GR2')
+        plt.plot_date(Time, Avg_Temp_UnderBed_GR2,"-", label = 'Average Temperature under the bed_GR2')
+        plt.plot_date(avg_time, Avg_Temp_CntrlRoof,"-", label = 'AverageTemperature of Control Roof')
+        plt.legend()
+        plt.title("Average Temperatures of the GR2")
+        plt.show()
+    
+    
+# 4/b) Categorising data by temperature blocs (20-25-30-35C°)
+
+# 5/ Creating dialog to use easily this code
+
+# Bonus/ Failed attempts at coding   
+
+  
+#l = time.strptime(july_11[0][2], '%d/%m/%Y %H:%M')
+#datetime.datetime(2022,int(data_table[0][i][3:5]),int(data_table[0][i][0:2]),int(data_table[0][i][11:13]),int(data_table[0][i][15:17])))
+#time.strptime(data_table[0][i], '%d/%m/%Y %H:%M'))
